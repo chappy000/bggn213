@@ -1,2 +1,2 @@
 # bggn213
-Bioinformatics Fall 2021
+Bioinformatics at UCSD, Fall 2021
