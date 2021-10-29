@@ -1,7 +1,7 @@
 ---
-title: "Class 09 Mini-Project"
+title: "Class 09 Mini-Project Completed"
 author: "Claire Chapman"
-date: "10/27/2021"
+date: "10/29/2021"
 output: pdf_document
 ---
 
@@ -213,7 +213,7 @@ wisc.xclusters <- cutree(wisc.hclust, h = 25)
 table(wisc.xclusters, diagnosis)
 ```
 
-4 cluster provided some of the best results but using 5 clusters, at h = 18, could be a better decision. The two main benign and malignant groups retain the same values as in the original 4 cluster model but now, the additional three clusters are at least 100% benign or 100% malignant. In the 4 cluster model, one of the additional clusters was a mix of benign (29%) and malignant (71%).
+4 cluster provided some of the best results but using 5 clusters, at h = 18, could be a better decision depending on the data and what you value. The two main benign and malignant groups retain the same values as in the original 4 cluster model but now, the additional three clusters are at least 100% benign or 100% malignant. In the 4 cluster model, one of the additional clusters was a mix of benign (29%) and malignant (71%).
 
 ## Using Different Methods
 > Q13. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.
@@ -238,6 +238,21 @@ plot(hclust(data.dist, method = "ward.D2"))
 ```
 My favorite method was ward.D2 because it was the easiest to read. The symmetry of the plot made the larger clusters much easier to see. Additionally, all branches ended in the same place on a horizontal line which makes more conceptual sense to me.
 
+## K-means Clustering
+```{r}
+data.scaled <- scale(wisc.data)
+wisc.km <- kmeans(data.scaled, centers = 2, nstart = 20)
+```
+```{r}
+table(wisc.km$cluster, diagnosis)
+```
+> Q14. How well does k-means separate the two diagnoses? How does it compare to your hclust results?
+
+```{r}
+table(wisc.hclust.clusters, wisc.km$cluster)
+```
+The k means model groups the individuals into two clear groups that can be associated with B or M. This is fewer groups than in the hcluster model that makes the grouping easier to understand. In general though, the two methods corroborate with each other.
+
 ## Combining Methods
 Does PCA improve or degrade the performance of hierarchical clustering?
 ```{r}
@@ -246,5 +261,103 @@ plot(wisc.pr.hclust)
 ```
 
 Are these two main branches representative of malignant and benign tumors?
+Can cut using h = 80 or k = 2
 
-# **TO BE CONT.**
+```{r}
+grps <- cutree(wisc.pr.hclust, k = 2)
+table(grps)
+```
+```{r}
+table(grps, diagnosis)
+```
+```{r}
+plot(wisc.pr$x[, 1:2], col = grps)
+```
+```{r}
+plot(wisc.pr$x[, 1:2], col = diagnosis)
+```
+To switch the colors so they are less confusing, turn grps into a factor and reorder the levels
+```{r}
+g <- as.factor(grps)
+levels(g)
+```
+```{r}
+g <- relevel(g,2)
+levels(g)
+```
+Try the plot again
+```{r}
+plot(wisc.pr$x[, 1:2], col = g)
+```
+> Q15. How well does the newly created model with four clusters separate out the two diagnoses?
+
+```{r}
+wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust, k = 2)
+```
+```{r}
+table(wisc.pr.hclust.clusters, diagnosis)
+```
+This new combined model does a better job separating the individuals because there are two clear groups, one associated with both B and M. Having four clusters in the previous hclust model was more confusing considering there are only two possible diagnoses.
+
+> Q16. How well do the k-means and hierarchical clustering models you created in previous sections (i.e. before PCA) do in terms of separating the diagnoses? Again, use the table() function to compare the output of each model (wisc.km$cluster and wisc.hclust.clusters) with the vector containing the actual diagnoses.
+
+```{r}
+table(wisc.km$cluster, diagnosis)
+```
+```{r}
+table(wisc.hclust.clusters, diagnosis)
+```
+The k means model is more similar to the actual diagnoses because there are only two groups whereas the hcluster model has two extra groups that have fewer individuals and therefore are harder to confidently associate with either B or M.
+Overall, the two clusterings seem to be very similar, the two main B and M groups are only different by <10 individuals.
+
+## Sensitivity and Specificity
+**Sensitivity** : test's ability to correctly detect ill patients with the condition. In this case, the total number of samples in a cluster identified as M divided by the number of known M or TP/(TP+FN)
+**Specificity** : test's ability to correctly reject healthy patients without the condition. In this case, number of samples in a cluster identified as B divided by the number of true B or TN/(TN+FP)
+Can also look at **accuracy** = #correct / total
+```{r}
+# for pr hclust combo
+(165 + 351)/nrow(wisc.data)
+```
+
+
+> Q17. Which of your analysis procedures resulted in a clustering model with the best specificity? How about sensitivity?
+
+```{r}
+hclust.sens <- (165+5+2)/(165+5+2+40)
+hclust.spec <- 343/(343+12+2)
+hclust.pr.sens <- 188/(188+24)
+hclust.pr.spec <- 329/(329+28)
+kmeans.sens <- 175/(175+37)
+kmeans.spec <- 343/(343+14)
+```
+```{r}
+hclust.sens
+hclust.spec
+hclust.pr.sens
+hclust.pr.spec
+kmeans.sens
+kmeans.spec
+```
+**Sensitivity**:
+hclust/PCA > K-means > hclust
+
+**Specificity**:
+hclust = K-means > hclust/PCA
+
+## Prediction
+Take our previous PCA model and apply it to new cancer cell data
+```{r}
+url <- "https://tinyurl.com/new-samples-CSV"
+new <- read.csv(url)
+npc <- predict(wisc.pr, newdata=new)
+npc
+```
+Add these samples to our PCA plot
+```{r}
+plot(wisc.pr$x[,1:2], col = g)
+points(npc[,1], npc[,2], col = "blue", pch = 16, cex = 3)
+text(npc[,1], npc[,2], c(1,2), col = "white")
+```
+> Q18. Which of these new patients should we prioritize for follow up based on your results?
+
+We would prioritize patient 2 because they are grouped in the malignant group.
