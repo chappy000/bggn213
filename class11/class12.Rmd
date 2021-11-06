@@ -2,10 +2,10 @@
 title: 'Class12: Structural Bioinformatics pt. 2'
 author: "Claire Chapman"
 date: "11/5/2021"
-output: pdf_document
+output: html_document
 ---
 
-\# Working with bio3d
+# Working with bio3d
 
 ```{r}
 library(bio3d)
@@ -44,65 +44,80 @@ mktrj(modes, file = "nma.pdb")
 
 ![](nma.png)
 
-Workflow:
-Sequence -> PDB -> Structures -> MSA -> PCA
+Workflow: Sequence -\> PDB -\> Structures -\> MSA -\> PCA
 
 ## Comparative Structure Analysis
+
 Start by getting a sequence of interest.
+
 ```{r}
 aa <- get.seq("1AKE_A")
-aa
 ```
 
-To search the **PDB database** (main database for exp structures) for sequences like  aa. Looking for intersection of all values (E, coverage, query ...)
+To search the **PDB database** (main database for exp structures) for sequences like aa. Looking for intersection of all values (E, coverage, query ...)
+
 ```{r}
 blast <- blast.pdb(aa)
 ```
+
 ```{r}
 tophits <- plot(blast)
 ```
 
 We will use the 16 top hits (chosen by the plot function) from the search of PDB
+
 ```{r}
 tophits$pdb.id
 ```
 
 Now to download all these similar structures in the PDB and store them on our computer
+
 ```{r}
 files <- get.pdb(tophits$pdb.id, path = "pdbs", split = TRUE, gzip = TRUE)
 ```
 
 Want to align/superimpose all the structures now. Use the function **pdbaln()**
+
 ```{r}
 pdbs <- pdbaln(files, fit = TRUE)
 ```
+
 Let's have a look
+
 ```{r}
 pdbs
 ```
+
 ```{r}
 ids <- basename.pdb(pdbs$id)
 plot(pdbs, labels=ids)
 ```
 
 # Principal Component Analysis
+
 Time to do PCA on the xyz coordinate data of all these structures with the **pca()** function in bio3d.
+
 ```{r}
 pc <- pca(pdbs)
 plot(pc)
 ```
+
 Let's visualize the displacements/movements of the structure that are captured by PC1 (because it captures the most variance)
+
 ```{r}
 mktrj(pc, pc = 1, file = "pca.pdb")
 ```
+
 Open in VMD to see the movie
 
 Now, let's save our important results
+
 ```{r}
 #save(blast, files, pdbs, tophits, pc, file = "myPDBresults.RData")
 ```
+
 Next time, use
+
 ```{r}
 #load("myPDBresults.RData")
 ```
-
