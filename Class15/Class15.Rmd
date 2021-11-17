@@ -1,0 +1,192 @@
+---
+title: "Class 15 RNA-Seq"
+author: "Claire Chapman"
+date: "11/17/2021"
+output: pdf_document
+---
+
+## Read in Data
+DESeq2 expects a dataframe of count data and a second dataframe with information about the samples (metadata)
+```{r}
+counts <- read.csv("airway_scaledcounts.csv", row.names=1)
+metadata <-  read.csv("airway_metadata.csv")
+```
+
+Take a look
+```{r}
+head(counts)
+```
+```{r}
+head(metadata)
+```
+There are `r nrow(counts)` genes in this dataset
+
+Column names of counts data MUST equal the IDs in metadata. Check this:
+```{r}
+metadata$id == colnames(counts)
+```
+
+
+## Exploratory Diff Gene Analysis - Compare control to treated
+For demonstration purposes only, never do actual diff analysis this way
+
+Extract row from metadata with controls
+```{r}
+control <- metadata[metadata[,"dex"]=="control",]
+control.counts <- counts[ ,control$id]
+control.mean <- rowSums( control.counts )/4 
+head(control.mean)
+```
+
+
+OR use dplyr (I prefer)
+```{r}
+library(dplyr)
+control <- metadata %>% filter(dex=="control")
+control.counts <- counts %>% select(control$id) 
+control.mean <- rowSums(control.counts)/4
+head(control.mean)
+```
+```{r}
+treated <- metadata %>% filter(dex=="treated")
+treated.counts <- counts %>% select(treated$id) 
+treated.mean <- rowSums(treated.counts)/4
+head(treated.mean)
+```
+Combine mean count data
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+```
+
+## Compare the control and treated
+Quick scatterplot to check work
+```{r}
+library(ggplot2)
+meancounts %>% 
+  ggplot(aes(control.mean, treated.mean)) +
+  geom_point()+
+  labs(x = "control", y = "treated")
+```
+Not truly seeing all the 60,000 data
+```{r}
+meancounts %>% 
+  ggplot(aes(control.mean, treated.mean)) +
+  scale_y_continuous(trans = "log2")+
+  scale_x_continuous(trans = "log2")+
+  geom_point()+
+  labs(x = "control", y = "treated")
+```
+We often use log transformations to make life easier...
+
+If there is no difference, log change is 0
+```{r}
+log2(20/20)
+```
+If there is twice as much, expression goes up, log change is 1
+```{r}
+log2(40/20)
+```
+If there is half as much, expression goes down, log change is -1
+```{r}
+log2(10/20)
+```
+Transform our data
+Adding a column called log2 fold change representing log2(treated/control)
+```{r}
+meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
+```
+```{r}
+head(meancounts)
+```
+
+You get some weird values
+"NaN" when you try to divide by zero
+"-inf"
+Need to exclude the zeros
+```{r}
+head(meancounts[,1:2] == 0)
+```
+the `which()` function tells us the indices of TRUE entries in a logical vector. It is not useful in default mode, doesn't break between columns. Need to argue with it.
+```{r}
+inds <- which(meancounts[,1:2] == 0, arr.ind = TRUE)
+head(inds)
+```
+Some genes have 0 value in both columns, so select unique values
+```{r}
+to.rm <- unique(inds[,1])
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+```
+
+We now have `r nrow(mycounts)` genes remaining.
+
+## Up-regulation and Down-regulation
+A common threshold for log2fc is up-regulated if > 2 and down-regulated if < -2.
+```{r}
+up_reg <- mycounts$log2fc > 2
+down_reg <- mycounts$log2fc < -2
+```
+```{r}
+sum(up_reg)
+```
+
+There are `r sum(up_reg)` genes up-regulated, or `r 100*(sum(up_reg)/nrow(mycounts))` %
+
+There are `r sum(down_reg)` genes down-regulated or `r 100*(sum(down_reg)/nrow(mycounts))` %
+
+
+## DESeq2 Analysis
+```{r}
+library(DESeq2)
+```
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex)
+```
+```{r}
+dds
+```
+```{r}
+dds <- DESeq(dds)
+```
+```{r}
+res <- results(dds)
+res
+```
+
+## Volcano plot
+Common way to visualize the results
+Add lines at our -2, 2 fc thresholds and at the significant p value threshold.
+We are interested in the top left and top right quadrants.
+```{r}
+plot(res$log2FoldChange, -log(res$padj))
+abline(v = c(-2,2), col = "gray")
+abline(h = -log(0.05), col = "gray")
+```
+
+## Adding annotation data
+Use Bioconductor's main annotation packages. Must first install these packages in the console.
+
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+```{r}
+columns(org.Hs.eg.db)
+```
+We want to make a new value "SYMBOL" that includes the common gene name that will be widely recognized and used.
+
+```{r}
+res$symbol <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res), # Our genenames
+                     keytype="ENSEMBL",        # The format of our genenames
+                     column="SYMBOL",          # The new format we want to add
+                     multiVals="first")
+head(res)
+```
+Now let's save it for next time!
+```{r}
+write.csv(res, file = "DESeq_results.csv")
+```
+
