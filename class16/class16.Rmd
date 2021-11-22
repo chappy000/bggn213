@@ -1,0 +1,170 @@
+---
+title: "Class 16 RNA Seq Mini Project"
+author: "Claire Chapman"
+date: "11/20/2021"
+output: pdf_document
+---
+
+## Differential Expression Analysis
+Download the data
+```{r}
+library(DESeq2)
+```
+
+```{r}
+metaFile <- "GSE37704_metadata.csv"
+countFile <- "GSE37704_featurecounts.csv"
+```
+
+Take a look at metadata
+```{r}
+colData = read.csv(metaFile, row.names = 1)
+head(colData)
+```
+Take a look at countData
+```{r}
+countData = read.csv(countFile, row.names = 1)
+head(countData)
+```
+We do not want the first column of the count data called "length". All columns must be the same as the rows of our meta data.
+```{r}
+countData <- as.matrix(countData[,-1])
+head(countData)
+```
+Let's get rid of the zero data so it doesn't mess up future calculations
+```{r}
+countData = countData[-which(rowSums(countData)==0),]
+head(countData)
+```
+### Running DESeq2
+Set up the DESeqDataSet object required for the function
+```{r}
+dds = DESeqDataSetFromMatrix(countData = countData, colData = colData, design =~condition)
+dds = DESeq(dds)
+```
+```{r}
+dds
+```
+```{r}
+res = results(dds)
+```
+
+Use summary function to get a feel of how many genes are up or down regulated
+```{r}
+summary(res)
+```
+### Volcano Plot
+```{r}
+plot(res$log2FoldChange, -log(res$padj))
+```
+Add code to polish the graph
+```{r}
+mycols <- rep("gray", nrow(res) )
+
+# genes with absolute fold change above 2 will be red
+mycols[abs(res$log2FoldChange) > 2] <- "red"
+
+# genes with adjusted p-value less than 0.01 and absolute fold change more than 2 will be blue
+inds <- (res$padj < 0.01) & (abs(res$log2FoldChange) > 2)
+mycols[inds] <- "blue"
+
+plot(res$log2FoldChange, -log(res$padj), col = mycols, xlab = "Log2(FoldChange)", ylab = "-Log(P-value)" )
+
+# add some cut off lines
+abline(v = c(-2,2), col = "gray", lty = 2)
+abline(h = -log(0.1), col = "gray", lty = 2)
+```
+Adding some gene annotation
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+```{r}
+columns(org.Hs.eg.db)
+```
+```{r}
+res$symbol = mapIds(org.Hs.eg.db, keys = row.names(res), keytype = "ENSEMBL", column = "SYMBOL", multiVals = "first")
+
+res$entrez = mapIds(org.Hs.eg.db, keys = row.names(res), keytype = "ENSEMBL", column = "ENTREZID", multiVals = "first")
+
+res$name = mapIds(org.Hs.eg.db, keys = row.names(res), keytype = "ENSEMBL", column = "GENENAME", multiVals = "first")
+
+head(res, 10)
+```
+Reorder by p-value and save them to our current directory
+```{r}
+res = res[order(res$pvalue),]
+write.csv(res, file = "deseq_results.csv")
+```
+
+## Pathway Analysis
+Time to use the **gage** pathway for pathway analysis. First we find a list of enriched pathways, then we use **pathview** to draw pathway diagrams
+
+Install one time only in console
+```{r}
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+```
+
+Narrow down to signaling and metabolic pathways only
+```{r}
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+head(kegg.sets.hs, 3)
+```
+**gage()** requires a named vector of fold changes (from DESeq2 analysis) with names of values as Entrez gene IDs (obtained from mapIDs())
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+Use Gage
+```{r}
+keggres = gage(foldchanges, gsets = kegg.sets.hs)
+```
+```{r}
+attributes(keggres)
+head(keggres$less)
+```
+```{r}
+pathview(gene.data = foldchanges, pathway.id = "hsa04110")
+```
+Another way to present the data...
+```{r}
+pathview(gene.data = foldchanges, pathway.id = "hsa04110", kegg.native = FALSE)
+```
+Let's try to pull out the top 5 upregulated pathways to use for future pathview plotting
+
+Focus on top 5
+```{r}
+keggrespathways <- rownames(keggres$greater)[1:5]
+```
+Extract IDs of each string
+```{r}
+keggresids = substr(keggrespathways, start = 1, stop = 8)
+keggresids
+```
+Now use these IDs in pathview to show paths for the top 5
+```{r}
+pathview(gene.data = foldchanges, pathway.id = keggresids, species = "hsa")
+```
+Try to do this but with the 5 most downregulated genes
+Focus on top 5
+```{r}
+keggrespathways.down <- rownames(keggres$less)[1:5]
+```
+
+Extract the IDs (8 characters) of each string
+```{r}
+keggresids.down <- substr(keggrespathways.down, start = 1, stop = 8)
+keggresids.down
+```
+View the data
+```{r}
+pathview(gene.data = foldchanges, pathway.id = keggresids.down, species = "hsa", low = "blue", mid = "green", high = "yellow")
+```
+
+
