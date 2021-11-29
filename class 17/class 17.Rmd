@@ -1,0 +1,218 @@
+---
+title: 'Class 17: Vaccination Mini Project'
+author: "Claire Chapman"
+date: "11/28/2021"
+output: html_document
+---
+
+## Getting Started
+Load your data
+```{r}
+vax <- read.csv("covid19vaccinesbyzipcode_test.csv")
+head(vax)
+```
+> Q1. What column details the total number of people fully vaccinated?
+
+8
+
+> Q2. What column details the Zip code tabulation area?
+
+2
+
+> Q3. What is the earliest date in this dataset?
+
+2021-01-05
+
+> Q4. What is the latest date in this dataset?
+
+2021-11-23
+
+```{r}
+skimr::skim(vax)
+```
+> Q5. How many numeric columns are in this dataset?
+
+9
+
+> Q6. Note that there are “missing values” in the dataset. How many NA values there in the persons_fully_vaccinated column?
+
+8355
+
+> Q7. What percent of persons_fully_vaccinated values are missing (to 2 significant figures)?
+
+8355/82908 = 10.08%
+
+> Q8. [Optional]: Why might this data be missing?
+
+Because the CDC was unable to collect the data from the given zip code due to missing infrastructure or noncompliance
+
+### Working with dates
+```{r}
+library(lubridate)
+```
+```{r}
+today()
+```
+Convert to a format that lubridate will understand 
+```{r}
+vax$as_of_date <-  ymd(vax$as_of_date)
+```
+
+> Q9. How many days have passed since the last update of the dataset?
+
+```{r}
+today() - vax$as_of_date[nrow(vax)]
+```
+
+> Q10. How many unique dates are in the dataset (i.e. how many different dates are detailed)?
+
+```{r}
+unique(vax$as_of_date)
+```
+47 unique dates
+
+
+### Working with ZIP codes
+```{r}
+library(zipcodeR)
+```
+
+```{r}
+geocode_zip('92037')
+```
+Calculate distance between two zip code centers
+```{r}
+zip_distance('92037', '92109')
+```
+Pull census data
+```{r}
+reverse_zipcode(c('92037', "92109"))
+```
+
+## Focus on the San Diego area
+```{r}
+library(dplyr)
+```
+```{r}
+sd <- vax %>% 
+  filter(county == "San Diego")
+```
+
+> Q11. How many distinct zip codes are listed for San Diego County?
+
+```{r}
+unique(sd$zip_code_tabulation_area)
+```
+107 zip codes in San Diego County
+
+> Q12. What San Diego County Zip code area has the largest 12 + Population in this dataset?
+
+```{r}
+sd %>% 
+  filter(age12_plus_population == max(sd$age12_plus_population))
+```
+92154 zip code has the age 12 plus population of 76365.2
+
+> Q13. What is the overall average “Percent of Population Fully Vaccinated” value for all San Diego “County” as of “2021-11-09”?
+
+```{r}
+sd %>% 
+  filter(as_of_date == "2021-11-09") %>% 
+  summarise(avg_fullvax = mean(percent_of_population_fully_vaccinated, na.rm = TRUE))
+```
+
+
+> Q14. Using either ggplot or base R graphics make a summary figure that shows the distribution of Percent of Population Fully Vaccinated values as of “2021-11-09”?
+
+```{r}
+library(ggplot2)
+```
+
+
+```{r}
+nov_9 <- sd %>% 
+  filter(as_of_date == "2021-11-09")
+hist(nov_9$percent_of_population_fully_vaccinated)
+```
+
+## Focus on UCSD/La Jolla
+```{r}
+ucsd <- filter(sd, zip_code_tabulation_area == "92037")
+```
+
+> Q15. Using ggplot make a graph of the vaccination rate time course for the 92037 ZIP code area
+
+```{r}
+ucsd %>% 
+  ggplot(aes(x = as_of_date, y = percent_of_population_fully_vaccinated)) +
+  geom_point()+
+  geom_line(group = 1)+
+  ylim(c(0,1)) +
+  labs(title = "Vaccination Rate for La Jolla CA", y = "Percent Vaccinated", x = "Date")
+```
+> Q16. Calculate the mean “Percent of Population Fully Vaccinated” for ZIP code areas with a population as large as 92037 (La Jolla) as_of_date “2021-11-16”. Add this as a straight horizontal line to your plot from above with the geom_hline() function?
+
+```{r}
+sd %>% 
+  filter(as_of_date == "2021-11-16") %>% 
+  filter(age5_plus_population >= 36144) %>% 
+  summarise(mean_vaxrate = mean(percent_of_population_fully_vaccinated))
+```
+```{r}
+ucsd %>% 
+  ggplot(aes(x = as_of_date, y = percent_of_population_fully_vaccinated)) +
+  geom_point()+
+  geom_line(group = 1)+
+  ylim(c(0,1)) +
+  labs(title = "Vaccination Rate for La Jolla CA", y = "Percent Vaccinated", x = "Date")+
+  geom_hline(yintercept = 0.6744255)
+```
+> Q17. What is the 6 number summary (Min, 1st Qu., Median, Mean, 3rd Qu., and Max) of the “Percent of Population Fully Vaccinated” values for ZIP code areas with a population as large as 92037 (La Jolla) as_of_date “2021-11-16”?
+
+```{r}
+vax %>% 
+  filter(as_of_date == "2021-11-16") %>% 
+  filter(age5_plus_population >= 36144) %>% 
+  summarise(min = min(percent_of_population_fully_vaccinated), median = median(percent_of_population_fully_vaccinated), mean = mean(percent_of_population_fully_vaccinated), sec_qtr = median/2, third_qtr = 3/2*(median),  max = max(percent_of_population_fully_vaccinated))
+```
+> Q18. Using ggplot generate a histogram of this data.
+
+```{r}
+vax %>% 
+  filter(as_of_date == "2021-11-16") %>% 
+  filter(age5_plus_population >= 36144) %>% 
+  ggplot(aes(x = percent_of_population_fully_vaccinated)) +
+  geom_histogram()
+```
+
+> Q19. Is the 92109 and 92040 ZIP code areas above or below the average value you calculated for all these above?
+
+```{r}
+vax %>% filter(as_of_date == "2021-11-16") %>%  
+  filter(zip_code_tabulation_area=="92040") %>%
+  select(percent_of_population_fully_vaccinated)
+```
+Lower in ZIP 92040
+
+```{r}
+vax %>% filter(as_of_date == "2021-11-16") %>%  
+  filter(zip_code_tabulation_area=="92109") %>%
+  select(percent_of_population_fully_vaccinated)
+```
+Greater in ZIP 92109
+
+> Q20. Finally make a time course plot of vaccination progress for all areas in the full dataset with a age5_plus_population > 36144
+
+```{r}
+vax.36 <- vax %>% 
+  filter(age5_plus_population > 36144) 
+vax.36 %>% 
+  ggplot(aes(x = as_of_date,  y = percent_of_population_fully_vaccinated, group = zip_code_tabulation_area)) +
+  geom_line(alpha = 0.2)+
+  ylim(c(0,1))+
+  labs(x = "Date", y = "Vaccination Rate", title = "Vaccination Rates Across California", subtitle = "In ZIP codes with populations greater than 36k")+
+  geom_hline(yintercept = 0.6744255)
+```
+> Q21. How do you feel about traveling for Thanksgiving and meeting for in-person class next Week?
+
+I know the decision has already been made but thanks for thinking about our health after the traveling!

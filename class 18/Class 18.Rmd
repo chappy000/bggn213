@@ -1,0 +1,63 @@
+---
+title: "Class 18"
+author: "Claire Chapman"
+date: "11/26/2021"
+output: pdf_document
+---
+# Introduction to Genome Informatics Lab
+## Section 1: Identify genetic variants of interest
+
+> Q1: What are those 4 candidate SNPs?
+
+According to Verlaan et al. (2009), the four SNPs were rs12936231, rs8067378, rs9303277, and rs7216389
+
+> Q2: What three genes do these variants overlap or effect?
+
+According to ENSEMBL, the three genes effected by these variants are GSDMB, IKZF3, and ZPBP2.
+
+> Q3: What is the location of rs8067378 and what are the different alleles for rs8067378?
+
+The location is 17:39,894,595-39,895,595 and it has A/C/G alleles
+
+> Q4: Name at least 3 downstream genes for rs8067378? 
+
+LRRC3C, PSMD3, and CSF3
+
+> Q5: What proportion of the Mexican Ancestry in Los Angeles sample population (MXL) are
+homozygous for the asthma associated SNP (G|G)?
+
+9
+
+> Q6. Back on the ENSEMBLE page, use the “search for a sample” field above to find the
+particular sample HG00109. This is a male from the GBR population group. What is the
+genotype for this sample?
+
+G|G
+
+
+## Section 2: Initial RNA-Seq Analysis
+
+> Q7: How many sequences are there in the first file? What is
+the file size and format of the data?
+
+3863 sequences in the first file. It is a 758 KB FASTQ file
+
+> Q8: What is the GC content and sequence length of the second fastq file?
+
+54% GC and sequence length of 50-75
+
+> Q9: How about per base sequence quality? Does any base have a mean quality score below
+20?
+
+No bases in the second sequence had a quality score below 20
+
+
+## Section 3: Mapping RNA-Seq reads to genome
+We are going to use the Tophat tool
+
+
+
+
+
+
+
