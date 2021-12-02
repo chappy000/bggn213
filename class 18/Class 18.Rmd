@@ -54,7 +54,21 @@ No bases in the second sequence had a quality score below 20
 
 ## Section 3: Mapping RNA-Seq reads to genome
 We are going to use the Tophat tool
+Returns five outputs: accepted_hits, insertions, deletions, splice junctions, and alignment summary
 
+### Accepted Hits
+> Q10: Where are most the accepted hits located?
+
+chr17:38,150,000-38,155,000
+
+> Q11: Following Q10, is there any interesting gene around that area?
+
+Human Gene PSMD3: 26s proteasome non-ATPase regulatory subunit3
+
+
+### Cufflinks
+We will use this tool to calculate gene expression
+Returns multiple outputs, we will look at the **Gene Expression** output
 
 
 
