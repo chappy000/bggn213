@@ -2,7 +2,7 @@
 title: "Class 08"
 author: "Claire Chapman"
 date: "10/24/2021"
-output: pdf_document
+output: github_document
 ---
 
 # Clustering methods
