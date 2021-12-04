@@ -1,8 +1,8 @@
 ---
-title: "Class 16 RNA Seq Mini Project"
+title: "RNA Seq Mini-Project"
 author: "Claire Chapman"
 date: "11/20/2021"
-output: pdf_document
+output: github_document
 ---
 
 ## Differential Expression Analysis
