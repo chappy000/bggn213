@@ -14,83 +14,82 @@ tmp <- c(rnorm(30, 3), rnorm(30, -3))
 tmp
 ```
 
-    ##  [1]  2.8002332  3.9701052  3.3369556  3.7836700  3.3211626  1.7456154
-    ##  [7]  1.5760392  0.5851125  1.5591935  4.5044798  4.2942720  5.1687247
-    ## [13]  2.0413453  0.4290256  2.2369067  2.3911038  3.9713766  2.6288403
-    ## [19]  2.8916769  3.3460085  3.8164024  5.2060766  3.7882068  2.0240792
-    ## [25]  3.8821791  1.2006701  2.5168669  3.1301394  2.8019074  2.8252322
-    ## [31] -3.0526633 -1.4349289 -4.2428629 -2.9537627 -2.9292198 -3.0439476
-    ## [37] -4.9264042 -2.4193927 -2.8933739 -3.2491997 -3.6286516 -2.2070870
-    ## [43] -2.9886541 -3.8266876 -1.9808742 -2.6341570 -4.1491752 -3.3405212
-    ## [49] -1.9008502 -1.9911995 -4.2491301 -3.3314143 -3.5268212 -3.2108528
-    ## [55] -3.3877758 -4.1314835 -3.5134551 -3.4035565 -3.4118993 -2.5473170
+    ##  [1]  1.949560  1.460269  2.768631  2.344374  4.399573  2.984136  2.499409
+    ##  [8]  3.312604  2.889832  3.431078  2.870798  3.887501  4.848608  3.826422
+    ## [15]  1.858206  1.389532  2.712091  3.009193  2.824275  3.111927  1.793882
+    ## [22]  4.183873  2.638974  2.953295  3.475109  1.758898  3.993497  2.212229
+    ## [29]  2.441072  3.212870 -1.750406 -3.132077 -2.333050 -3.327196 -3.733617
+    ## [36] -1.842713 -2.437303 -2.101052 -3.558562 -5.265273 -2.568985 -3.840778
+    ## [43] -3.648931 -5.003412 -2.608686 -1.980908 -2.126052 -3.666457 -2.374606
+    ## [50] -1.120921 -2.709855 -1.097299 -0.650693 -2.213895 -3.948098 -1.764697
+    ## [57] -2.526939 -2.662185 -2.884113 -3.545710
 
 ``` r
 data <- cbind(x = tmp, y = rev(tmp))
 data
 ```
 
-    ##                x          y
-    ##  [1,]  2.8002332 -2.5473170
-    ##  [2,]  3.9701052 -3.4118993
-    ##  [3,]  3.3369556 -3.4035565
-    ##  [4,]  3.7836700 -3.5134551
-    ##  [5,]  3.3211626 -4.1314835
-    ##  [6,]  1.7456154 -3.3877758
-    ##  [7,]  1.5760392 -3.2108528
-    ##  [8,]  0.5851125 -3.5268212
-    ##  [9,]  1.5591935 -3.3314143
-    ## [10,]  4.5044798 -4.2491301
-    ## [11,]  4.2942720 -1.9911995
-    ## [12,]  5.1687247 -1.9008502
-    ## [13,]  2.0413453 -3.3405212
-    ## [14,]  0.4290256 -4.1491752
-    ## [15,]  2.2369067 -2.6341570
-    ## [16,]  2.3911038 -1.9808742
-    ## [17,]  3.9713766 -3.8266876
-    ## [18,]  2.6288403 -2.9886541
-    ## [19,]  2.8916769 -2.2070870
-    ## [20,]  3.3460085 -3.6286516
-    ## [21,]  3.8164024 -3.2491997
-    ## [22,]  5.2060766 -2.8933739
-    ## [23,]  3.7882068 -2.4193927
-    ## [24,]  2.0240792 -4.9264042
-    ## [25,]  3.8821791 -3.0439476
-    ## [26,]  1.2006701 -2.9292198
-    ## [27,]  2.5168669 -2.9537627
-    ## [28,]  3.1301394 -4.2428629
-    ## [29,]  2.8019074 -1.4349289
-    ## [30,]  2.8252322 -3.0526633
-    ## [31,] -3.0526633  2.8252322
-    ## [32,] -1.4349289  2.8019074
-    ## [33,] -4.2428629  3.1301394
-    ## [34,] -2.9537627  2.5168669
-    ## [35,] -2.9292198  1.2006701
-    ## [36,] -3.0439476  3.8821791
-    ## [37,] -4.9264042  2.0240792
-    ## [38,] -2.4193927  3.7882068
-    ## [39,] -2.8933739  5.2060766
-    ## [40,] -3.2491997  3.8164024
-    ## [41,] -3.6286516  3.3460085
-    ## [42,] -2.2070870  2.8916769
-    ## [43,] -2.9886541  2.6288403
-    ## [44,] -3.8266876  3.9713766
-    ## [45,] -1.9808742  2.3911038
-    ## [46,] -2.6341570  2.2369067
-    ## [47,] -4.1491752  0.4290256
-    ## [48,] -3.3405212  2.0413453
-    ## [49,] -1.9008502  5.1687247
-    ## [50,] -1.9911995  4.2942720
-    ## [51,] -4.2491301  4.5044798
-    ## [52,] -3.3314143  1.5591935
-    ## [53,] -3.5268212  0.5851125
-    ## [54,] -3.2108528  1.5760392
-    ## [55,] -3.3877758  1.7456154
-    ## [56,] -4.1314835  3.3211626
-    ## [57,] -3.5134551  3.7836700
-    ## [58,] -3.4035565  3.3369556
-    ## [59,] -3.4118993  3.9701052
-    ## [60,] -2.5473170  2.8002332
+    ##               x         y
+    ##  [1,]  1.949560 -3.545710
+    ##  [2,]  1.460269 -2.884113
+    ##  [3,]  2.768631 -2.662185
+    ##  [4,]  2.344374 -2.526939
+    ##  [5,]  4.399573 -1.764697
+    ##  [6,]  2.984136 -3.948098
+    ##  [7,]  2.499409 -2.213895
+    ##  [8,]  3.312604 -0.650693
+    ##  [9,]  2.889832 -1.097299
+    ## [10,]  3.431078 -2.709855
+    ## [11,]  2.870798 -1.120921
+    ## [12,]  3.887501 -2.374606
+    ## [13,]  4.848608 -3.666457
+    ## [14,]  3.826422 -2.126052
+    ## [15,]  1.858206 -1.980908
+    ## [16,]  1.389532 -2.608686
+    ## [17,]  2.712091 -5.003412
+    ## [18,]  3.009193 -3.648931
+    ## [19,]  2.824275 -3.840778
+    ## [20,]  3.111927 -2.568985
+    ## [21,]  1.793882 -5.265273
+    ## [22,]  4.183873 -3.558562
+    ## [23,]  2.638974 -2.101052
+    ## [24,]  2.953295 -2.437303
+    ## [25,]  3.475109 -1.842713
+    ## [26,]  1.758898 -3.733617
+    ## [27,]  3.993497 -3.327196
+    ## [28,]  2.212229 -2.333050
+    ## [29,]  2.441072 -3.132077
+    ## [30,]  3.212870 -1.750406
+    ## [31,] -1.750406  3.212870
+    ## [32,] -3.132077  2.441072
+    ## [33,] -2.333050  2.212229
+    ## [34,] -3.327196  3.993497
+    ## [35,] -3.733617  1.758898
+    ## [36,] -1.842713  3.475109
+    ## [37,] -2.437303  2.953295
+    ## [38,] -2.101052  2.638974
+    ## [39,] -3.558562  4.183873
+    ## [40,] -5.265273  1.793882
+    ## [41,] -2.568985  3.111927
+    ## [42,] -3.840778  2.824275
+    ## [43,] -3.648931  3.009193
+    ## [44,] -5.003412  2.712091
+    ## [45,] -2.608686  1.389532
+    ## [46,] -1.980908  1.858206
+    ## [47,] -2.126052  3.826422
+    ## [48,] -3.666457  4.848608
+    ## [49,] -2.374606  3.887501
+    ## [50,] -1.120921  2.870798
+    ## [51,] -2.709855  3.431078
+    ## [52,] -1.097299  2.889832
+    ## [53,] -0.650693  3.312604
+    ## [54,] -2.213895  2.499409
+    ## [55,] -3.948098  2.984136
+    ## [56,] -1.764697  4.399573
+    ## [57,] -2.526939  2.344374
+    ## [58,] -2.662185  2.768631
+    ## [59,] -2.884113  1.460269
+    ## [60,] -3.545710  1.949560
 
 Using just our eyes, we can assume that we should get two clusters
 
@@ -111,23 +110,23 @@ km
     ## 
     ## Cluster means:
     ##           x         y
-    ## 1  2.925787 -3.150244
-    ## 2 -3.150244  2.925787
+    ## 1  2.901391 -2.747482
+    ## 2 -2.747482  2.901391
     ## 
     ## Clustering vector:
     ##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2
     ## [39] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
     ## 
     ## Within cluster sum of squares by cluster:
-    ## [1] 61.15161 61.15161
-    ##  (between_SS / total_SS =  90.1 %)
+    ## [1] 55.04808 55.04808
+    ##  (between_SS / total_SS =  89.7 %)
     ## 
     ## Available components:
     ## 
     ## [1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
     ## [6] "betweenss"    "size"         "iter"         "ifault"
 
-> Q. How many points are in each cluster?
+> Q1. How many points are in each cluster?
 
 ``` r
 km$size
@@ -137,7 +136,7 @@ km$size
 
 **Thirty points in each cluster**
 
-> Q. What “component” of your result object details cluster
+> Q2. What “component” of your result object details cluster
 > assignment/membership?
 
 ``` r
@@ -147,17 +146,17 @@ km$cluster
     ##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2
     ## [39] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 
-> Q. What “component” of your result object details cluster center?
+> Q3. What “component” of your result object details cluster center?
 
 ``` r
 km$centers
 ```
 
     ##           x         y
-    ## 1  2.925787 -3.150244
-    ## 2 -3.150244  2.925787
+    ## 1  2.901391 -2.747482
+    ## 2 -2.747482  2.901391
 
-> Q. Plot x colored by the kmeans cluster assignment and add cluster
+> Q4. Plot x colored by the kmeans cluster assignment and add cluster
 > centers as blue points
 
 ``` r
@@ -193,9 +192,10 @@ plot(hc)
 abline(h = 7, col = "red")
 ```
 
-![](class08_files/figure-gfm/unnamed-chunk-10-1.png)<!-- --> To find out
-membership vector, we need to “cut” the tree. Use **cutree()** function
-and tell it the height to cut at
+![](class08_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+To find out membership vector, we need to “cut” the tree. Use
+**cutree()** function and tell it the height to cut at
 
 ``` r
 cutree(hc, h = 7)
@@ -233,7 +233,7 @@ url <- "https://tinyurl.com/UK-foods"
 x <- read.csv(url)
 ```
 
-> Q1. How many rows and columns are in your new data frame named x? What
+> Q5. How many rows and columns are in your new data frame named x? What
 > R functions could you use to answer this questions?
 
 ``` r
@@ -283,7 +283,7 @@ dim(x)
 
     ## [1] 17  4
 
-> Q2. Which approach to solving the ‘row-names problem’ mentioned above
+> Q6. Which approach to solving the ‘row-names problem’ mentioned above
 > do you prefer and why? Is one approach more robust than another under
 > certain circumstances?
 
@@ -297,14 +297,15 @@ away the first column.
 barplot(as.matrix(x), beside = T, col = rainbow(nrow(x)))
 ```
 
-![](class08_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> &gt; Q3:
-Changing what optional argument in the above barplot() function results
-in the following plot?
+![](class08_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+> Q7: Changing what optional argument in the above barplot() function
+> results in the following plot?
 
 The argument “beside” determines if values are stacked on top of each
 other or beside each other. Default is beside = F and values are stacked
 
-> Q5: Generating all pairwise plots may help somewhat. Can you make
+> Q8: Generating all pairwise plots may help somewhat. Can you make
 > sense of the following code and resulting figure? What does it mean if
 > a given point lies on the diagonal for a given plot?
 
@@ -318,7 +319,7 @@ compares all pairs of countries. Points on the diagonal show that tha
 data is the same for the pair of countries. Points that are not on the
 diagonal signify differences between the two countries being compared.
 
-> Q6. What is the main differences between N. Ireland and the other
+> Q9. What is the main differences between N. Ireland and the other
 > countries of the UK in terms of this data-set?
 
 The main difference between N. Ireland and the other countries is the
@@ -378,8 +379,9 @@ par(mar = c(10, 3, 0.35, 0))
 barplot(pca$rotation[,1], las = 2)
 ```
 
-![](class08_files/figure-gfm/unnamed-chunk-25-1.png)<!-- --> \#\# One
-more PCA for the day
+![](class08_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
+## One more PCA for the day
 
 ``` r
 url2 <- "https://tinyurl.com/expression-CSV"
@@ -482,8 +484,9 @@ barplot(pca.var.per, main="Scree Plot",
         xlab="Principal Component", ylab="Percent Variation")
 ```
 
-![](class08_files/figure-gfm/unnamed-chunk-35-1.png)<!-- --> Adding
-colors
+![](class08_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+
+Adding colors
 
 ``` r
 colvec <- colnames(rna.data)

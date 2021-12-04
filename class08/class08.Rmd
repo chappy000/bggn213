@@ -29,24 +29,26 @@ km <- kmeans(data, centers = 2, nstart = 20)
 km
 ```
 
-> Q. How many points are in each cluster?
+> Q1. How many points are in each cluster?
 
 ```{r}
 km$size
 ```
 **Thirty points in each cluster**
 
-> Q. What "component" of your result object details cluster assignment/membership?
+> Q2. What "component" of your result object details cluster assignment/membership?
 
 ```{r}
 km$cluster
 ```
-> Q. What "component" of your result object details cluster center?
+
+> Q3. What "component" of your result object details cluster center?
 
 ```{r}
 km$centers
 ```
-> Q. Plot x colored by the kmeans cluster assignment and add cluster centers as blue points
+
+> Q4. Plot x colored by the kmeans cluster assignment and add cluster centers as blue points
 
 ```{r}
 plot(data, col = km$cluster)
@@ -60,15 +62,18 @@ A little bit more work required than in kmeans: can't just use x, need a distanc
 hc <- hclust(dist(data))
 hc
 ```
+
 This printout wasn't very helpful, use a plot. Hclust() has its own useful plot method
 ```{r}
 plot(hc)
 abline(h = 7, col = "red")
 ```
+
 To find out membership vector, we need to "cut" the tree. Use **cutree()** function and tell it the height to cut at
 ```{r}
 cutree(hc, h = 7)
 ```
+
 Can also use **cutree()** and state the number of k clusters we want
 ```{r}
 grps <- cutree(hc, k = 2)
@@ -88,15 +93,17 @@ url <- "https://tinyurl.com/UK-foods"
 x <- read.csv(url)
 ```
 
-> Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+> Q5. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
 
 ```{r}
 dim(x)
 ```
+
 Why aren't there only 4 columns (one for each country)?
 ```{r}
 head(x)
 ```
+
 Row names were being assigned to the first column, incorrectly
 
 ### Fix data
@@ -111,7 +118,7 @@ x <- read.csv(url, row.names = 1)
 dim(x)
 ```
 
-> Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+> Q6. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
 
 The second method is much better because it makes the correct change, permanently, to the dataset whereas the first method will keep taking away the first column.
 
@@ -119,11 +126,12 @@ The second method is much better because it makes the correct change, permanentl
 ```{r}
 barplot(as.matrix(x), beside = T, col = rainbow(nrow(x)))
 ```
-> Q3: Changing what optional argument in the above barplot() function results in the following plot?
+
+> Q7: Changing what optional argument in the above barplot() function results in the following plot?
 
 The argument "beside" determines if values are stacked on top of each other or beside each other. Default is beside = F and values are stacked
 
-> Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+> Q8: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
 
 ```{r}
 mycols <- rainbow(nrow(x))
@@ -131,7 +139,7 @@ pairs(x, col=mycols, pch=16)
 ```
 This plot compares all pairs of countries. Points on the diagonal show that tha data is the same for the pair of countries. Points that are not on the diagonal signify differences between the two countries being compared.
 
-> Q6. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+> Q9. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
 
 The main difference between N. Ireland and the other countries is the green data point that was consumed at a higher quantity in N.Ireland than others. The results are still just qualitative though...
 
@@ -150,6 +158,7 @@ We want the **score plot** (aka PCA plot), the plot of PC1 vs. PC2 that we often
 ```{r}
 attributes(pca)
 ```
+
 We want pca$x component for this plot
 ```{r}
 plot(pca$x[,1:2])
@@ -162,6 +171,7 @@ Loadings tell us how much each variable contributes to each PC
 par(mar = c(10, 3, 0.35, 0))
 barplot(pca$rotation[,1], las = 2)
 ```
+
 ## One more PCA for the day
 ```{r}
 url2 <- "https://tinyurl.com/expression-CSV"
@@ -206,6 +216,7 @@ Variance captured per PC
 ```{r}
 pca.var <- pca.rna$sdev^2
 ```
+
 Percent variance is often more informative to look at
 ```{r}
 pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
@@ -216,6 +227,7 @@ barplot(pca.var.per, main="Scree Plot",
         names.arg = paste0("PC", 1:10),
         xlab="Principal Component", ylab="Percent Variation")
 ```
+
 Adding colors
 ```{r}
 colvec <- colnames(rna.data)
