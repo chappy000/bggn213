@@ -1,8 +1,8 @@
 ---
-title: 'Class 17: Vaccination Mini Project'
+title: "Vaccination Mini Project"
 author: "Claire Chapman"
 date: "11/28/2021"
-output: html_document
+output: github_document
 ---
 
 ## Getting Started
@@ -13,38 +13,38 @@ head(vax)
 ```
 > Q1. What column details the total number of people fully vaccinated?
 
-8
+**8**
 
 > Q2. What column details the Zip code tabulation area?
 
-2
+**2**
 
 > Q3. What is the earliest date in this dataset?
 
-2021-01-05
+**2021-01-05**
 
 > Q4. What is the latest date in this dataset?
 
-2021-11-23
+**2021-11-23**
 
 ```{r}
 skimr::skim(vax)
 ```
 > Q5. How many numeric columns are in this dataset?
 
-9
+**9**
 
 > Q6. Note that there are “missing values” in the dataset. How many NA values there in the persons_fully_vaccinated column?
 
-8355
+**8355**
 
 > Q7. What percent of persons_fully_vaccinated values are missing (to 2 significant figures)?
 
-8355/82908 = 10.08%
+**8355/82908 = 10.08%**
 
 > Q8. [Optional]: Why might this data be missing?
 
-Because the CDC was unable to collect the data from the given zip code due to missing infrastructure or noncompliance
+**Because the CDC was unable to collect the data from the given zip code due to missing infrastructure or noncompliance**
 
 ### Working with dates
 ```{r}
@@ -69,7 +69,7 @@ today() - vax$as_of_date[nrow(vax)]
 ```{r}
 unique(vax$as_of_date)
 ```
-47 unique dates
+**47 unique dates**
 
 
 ### Working with ZIP codes
@@ -103,7 +103,7 @@ sd <- vax %>%
 ```{r}
 unique(sd$zip_code_tabulation_area)
 ```
-107 zip codes in San Diego County
+**107 zip codes in San Diego County**
 
 > Q12. What San Diego County Zip code area has the largest 12 + Population in this dataset?
 
@@ -111,7 +111,7 @@ unique(sd$zip_code_tabulation_area)
 sd %>% 
   filter(age12_plus_population == max(sd$age12_plus_population))
 ```
-92154 zip code has the age 12 plus population of 76365.2
+**92154 zip code has the age 12 plus population of 76365.2**
 
 > Q13. What is the overall average “Percent of Population Fully Vaccinated” value for all San Diego “County” as of “2021-11-09”?
 
@@ -192,14 +192,14 @@ vax %>% filter(as_of_date == "2021-11-16") %>%
   filter(zip_code_tabulation_area=="92040") %>%
   select(percent_of_population_fully_vaccinated)
 ```
-Lower in ZIP 92040
+**Lower in ZIP 92040**
 
 ```{r}
 vax %>% filter(as_of_date == "2021-11-16") %>%  
   filter(zip_code_tabulation_area=="92109") %>%
   select(percent_of_population_fully_vaccinated)
 ```
-Greater in ZIP 92109
+**Greater in ZIP 92109**
 
 > Q20. Finally make a time course plot of vaccination progress for all areas in the full dataset with a age5_plus_population > 36144
 
@@ -213,6 +213,3 @@ vax.36 %>%
   labs(x = "Date", y = "Vaccination Rate", title = "Vaccination Rates Across California", subtitle = "In ZIP codes with populations greater than 36k")+
   geom_hline(yintercept = 0.6744255)
 ```
-> Q21. How do you feel about traveling for Thanksgiving and meeting for in-person class next Week?
-
-I know the decision has already been made but thanks for thinking about our health after the traveling!
