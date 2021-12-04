@@ -1,8 +1,8 @@
 ---
-title: "Class 15 RNA-Seq"
+title: "RNA-Seq Analysis"
 author: "Claire Chapman"
 date: "11/17/2021"
-output: pdf_document
+output: github_document
 ---
 
 ## Read in Data
