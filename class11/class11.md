@@ -1,4 +1,4 @@
-Class 11
+Structural Bioinformatics pt. 1
 ================
 
 # Introduction to the RCSB Protein Data Bank (PDB)
@@ -53,7 +53,7 @@ perc_protein
 > Q3: Type HIV in the PDB website search box on the home page and
 > determine how many HIV-1 protease structures are in the current PDB?
 
-I found 1205 HIV-1 Proteases in my search
+**I found 1205 HIV-1 Proteases in my search**
 
 ## The PDB Format
 
@@ -62,15 +62,15 @@ Importing specific PDB File for HIV-1 into VMD
 > Q4: Water molecules normally have 3 atoms. Why do we see just one atom
 > per water molecule in this structure?
 
-The EM resolution is 2 angstroms which is not fine enough to see the
-hydrogen atoms
+**The EM resolution is 2 angstroms which is not fine enough to see the
+hydrogen atoms**
 
 > Q5: There is a conserved water molecule in the binding site. Can you
 > identify this water molecule? What residue number does this water
 > molecule have (see note below)?
 
-The water molecule with residue number 308 is in the binding site, best
-seen when the drug is in the binding site.
+**The water molecule with residue number 308 is in the binding site,
+best seen when the drug is in the binding site.**
 
 ### Import image into R
 
@@ -2497,7 +2497,7 @@ m <- nma(pdb)
 ```
 
     ##  Building Hessian...     Done in 0.03 seconds.
-    ##  Diagonalizing Hessian...    Done in 0.16 seconds.
+    ##  Diagonalizing Hessian...    Done in 0.14 seconds.
 
 ``` r
 plot(m)
