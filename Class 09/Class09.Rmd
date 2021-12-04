@@ -1,9 +1,9 @@
 ---
-title: "Class 09 Mini-Project Completed"
+title: "Unsupervised Learning"
 author: "Claire Chapman"
 date: "10/29/2021"
 output:
-  html_document:
+  github_document:
     df_print: paged
 ---
 
@@ -33,7 +33,7 @@ diagnosis <- as.factor(wisc.df$diagnosis)
 ```{r}
 dim(wisc.data)
 ```
-569 observations
+**569 observations**
 
 > Q2. How many of the observations have a malignant diagnosis?
 
@@ -46,12 +46,14 @@ table(diagnosis)
 ```{r}
 length(grep("_mean", colnames(wisc.data)))
 ```
+
 ## Principal Component Analysis
 Checking column means and standard deviation
 ```{r}
 colMeans(wisc.data)
 apply(wisc.data, 2, sd)
 ```
+
 Perform PCA
 ```{r}
 wisc.pr <- prcomp(wisc.data, scale = T)
@@ -63,34 +65,37 @@ summary(wisc.pr)
 
 > Q4. From your results, what proportion of the original variance is captured by the first principal components (PC1)?
 
-From row 2 of the summary above, PC1 accounts for 44.27%
+**From row 2 of the summary above, PC1 accounts for 44.27%**
 
 > Q5. How many principal components (PCs) are required to describe at least 70% of the original variance in the data?
 
-From row 3 of the summary above, 3 PCs are required to describe >70%
+**From row 3 of the summary above, 3 PCs are required to describe >70%**
 
 > Q6. How many principal components (PCs) are required to describe at least 90% of the original variance in the data?
 
-From row 3 of the summary above, 7 PCs are required to describe >90%
+**From row 3 of the summary above, 7 PCs are required to describe >90%**
 
 ## Interpreting PCA Results
 ```{r}
 biplot(wisc.pr)
 ```
+
 > Q7. What stands out to you about this plot? Is it easy or difficult to understand? Why?
 
-There is way too much information on this plot for it to be understood and to be useful.
+**There is way too much information on this plot for it to be understood and to be useful.**
 
 
 Let's make a better plot
 ```{r}
 plot(wisc.pr$x[,1], wisc.pr$x[,2], col = diagnosis, xlab = "PC1", ylab = "PC2")
 ```
+
 > Q8. Generate a similar plot for principal components 1 and 3. What do you notice about these plots?
 
 ```{r}
 plot(wisc.pr$x[,1], wisc.pr$x[,3], col = diagnosis, xlab = "PC1", ylab = "PC3")
 ```
+
 ### Using ggplot2 to make another plot
 Turn the PCA into a dataframe, add back diagnosis as a column
 ```{r}
@@ -113,6 +118,7 @@ Calculate variance of each component
 pr.var <- wisc.pr$sdev^2
 head(pr.var)
 ```
+
 Calculate the variance explained by each principal component
 ```{r}
 pve <- pr.var / sum(pr.var)
@@ -144,14 +150,14 @@ Loadings: vectors that explain the mapping from the original features to the PC
 ```{r}
 wisc.pr$rotation[,1]
 ```
-The loading vector for concave.points_mean is -0.260
+**The loading vector for concave.points_mean is -0.260**
 
 > Q10. What is the minimum number of principal components required to explain 80% of the variance of the data?
 
 ```{r}
 summary(wisc.pr)
 ```
-You need 5 principal components to explain >80% of the variance
+**You need 5 principal components to explain >80% of the variance**
 
 ## Hierarchical Clustering
 First scale the data
@@ -170,13 +176,15 @@ wisc.hclust <- hclust(data.dist, method = "complete")
 ```
 
 ## Results of HClustering
+
 > Q11. Using the plot() and abline() functions, what is the height at which the clustering model has 4 clusters?
 
 ```{r}
 plot(wisc.hclust)
 abline(h = 19, col = "red", lty = 2)
 ```
-There are four clusters at about height 19
+
+**There are four clusters at about height 19**
 
 ## Selecting number of clusters
 ```{r}
@@ -186,6 +194,7 @@ wisc.hclust.clusters <- cutree(wisc.hclust, h = 19)
 ```{r}
 table(wisc.hclust.clusters, diagnosis)
 ```
+
 > Q12. Can you find a better cluster vs diagnoses match by cutting into a different number of clusters between 2 and 10?
 
 ```{r}
@@ -215,9 +224,10 @@ wisc.xclusters <- cutree(wisc.hclust, h = 25)
 table(wisc.xclusters, diagnosis)
 ```
 
-4 cluster provided some of the best results but using 5 clusters, at h = 18, could be a better decision depending on the data and what you value. The two main benign and malignant groups retain the same values as in the original 4 cluster model but now, the additional three clusters are at least 100% benign or 100% malignant. In the 4 cluster model, one of the additional clusters was a mix of benign (29%) and malignant (71%).
+**4 cluster provided some of the best results but using 5 clusters, at h = 18, could be a better decision depending on the data and what you value. The two main benign and malignant groups retain the same values as in the original 4 cluster model but now, the additional three clusters are at least 100% benign or 100% malignant. In the 4 cluster model, one of the additional clusters was a mix of benign (29%) and malignant (71%).**
 
 ## Using Different Methods
+
 > Q13. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.
 
 "complete" for reference
@@ -238,7 +248,8 @@ plot(hclust(data.dist, method = "single"))
 ```{r}
 plot(hclust(data.dist, method = "ward.D2"))
 ```
-My favorite method was ward.D2 because it was the easiest to read. The symmetry of the plot made the larger clusters much easier to see. Additionally, all branches ended in the same place on a horizontal line which makes more conceptual sense to me.
+
+**My favorite method was ward.D2 because it was the easiest to read. The symmetry of the plot made the larger clusters much easier to see. Additionally, all branches ended in the same place on a horizontal line which makes more conceptual sense to me.**
 
 ## K-means Clustering
 ```{r}
@@ -248,12 +259,13 @@ wisc.km <- kmeans(data.scaled, centers = 2, nstart = 20)
 ```{r}
 table(wisc.km$cluster, diagnosis)
 ```
+
 > Q14. How well does k-means separate the two diagnoses? How does it compare to your hclust results?
 
 ```{r}
 table(wisc.hclust.clusters, wisc.km$cluster)
 ```
-The k means model groups the individuals into two clear groups that can be associated with B or M. This is fewer groups than in the hcluster model that makes the grouping easier to understand. In general though, the two methods corroborate with each other.
+**The k means model groups the individuals into two clear groups that can be associated with B or M. This is fewer groups than in the hcluster model that makes the grouping easier to understand. In general though, the two methods corroborate with each other.**
 
 ## Combining Methods
 Does PCA improve or degrade the performance of hierarchical clustering?
@@ -291,6 +303,7 @@ Try the plot again
 ```{r}
 plot(wisc.pr$x[, 1:2], col = g)
 ```
+
 > Q15. How well does the newly created model with four clusters separate out the two diagnoses?
 
 ```{r}
@@ -299,7 +312,7 @@ wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust, k = 2)
 ```{r}
 table(wisc.pr.hclust.clusters, diagnosis)
 ```
-This new combined model does a better job separating the individuals because there are two clear groups, one associated with both B and M. Having four clusters in the previous hclust model was more confusing considering there are only two possible diagnoses.
+**This new combined model does a better job separating the individuals because there are two clear groups, one associated with both B and M. Having four clusters in the previous hclust model was more confusing considering there are only two possible diagnoses.**
 
 > Q16. How well do the k-means and hierarchical clustering models you created in previous sections (i.e. before PCA) do in terms of separating the diagnoses? Again, use the table() function to compare the output of each model (wisc.km$cluster and wisc.hclust.clusters) with the vector containing the actual diagnoses.
 
@@ -309,8 +322,8 @@ table(wisc.km$cluster, diagnosis)
 ```{r}
 table(wisc.hclust.clusters, diagnosis)
 ```
-The k means model is more similar to the actual diagnoses because there are only two groups whereas the hcluster model has two extra groups that have fewer individuals and therefore are harder to confidently associate with either B or M.
-Overall, the two clusterings seem to be very similar, the two main B and M groups are only different by <10 individuals.
+**The k means model is more similar to the actual diagnoses because there are only two groups whereas the hcluster model has two extra groups that have fewer individuals and therefore are harder to confidently associate with either B or M.**
+**Overall, the two clusterings seem to be very similar, the two main B and M groups are only different by <10 individuals.**
 
 ## Sensitivity and Specificity
 **Sensitivity** : test's ability to correctly detect ill patients with the condition. In this case, the total number of samples in a cluster identified as M divided by the number of known M or TP/(TP+FN)
@@ -362,4 +375,4 @@ text(npc[,1], npc[,2], c(1,2), col = "white")
 ```
 > Q18. Which of these new patients should we prioritize for follow up based on your results?
 
-We would prioritize patient 2 because they are grouped in the malignant group.
+**We would prioritize patient 2 because they are grouped in the malignant group.**
