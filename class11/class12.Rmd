@@ -1,8 +1,8 @@
 ---
-title: 'Class12: Structural Bioinformatics pt. 2'
+title: "Structural Bioinformatics pt. 2"
 author: "Claire Chapman"
 date: "11/5/2021"
-output: html_document
+output: github_document
 ---
 
 # Working with bio3d
@@ -15,15 +15,15 @@ pdb
 
 > Q7: How many amino acid residues are there in this pdb object?
 
-129 amino acids
+**129 amino acids**
 
 > Q8: Name one of the two non-protein residues?
 
-A non-protein residue example is water
+**A non-protein residue example is water**
 
-> How many protein chains are in this structure?
+> Q9: How many protein chains are in this structure?
 
-There is 1 chain
+**There is 1 chain**
 
 ```{r}
 head(pdb$atom)
