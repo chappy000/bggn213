@@ -1,16 +1,15 @@
 ---
-title: "Class 06: R Functions"
+title: "R Functions"
 author: "Claire Chapman"
 date: "10/15/2021"
-output: pdf_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Question 1
-> Write a function grade() to determine an overall grade from a vector of student homework
+> Q1. Write a function grade() to determine an overall grade from a vector of student homework
 assignment scores dropping the lowest single score. If a student misses a homework (i.e. has an
 NA value) this can be used as a score to be potentially dropped. Your final function should be
 adquately explained with code comments and be able to work on an example class gradebook
@@ -132,8 +131,8 @@ Use **apply()** to apply the **grade()** function to the whole gradebook
 ```{r}
 apply(gradebook, 1, grade)
 ```
-## Question 2
-> Using your grade() function and the supplied gradebook, Who is the top scoring student
+
+> Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student
 overall in the gradebook?
 
 Use **sort** to pick out the top score from the results
@@ -148,8 +147,8 @@ which.max(results)
 
 **Student 18 has the top average score**
 
-## Question 3
-> From your analysis of the gradebook, which homework was toughest on students (i.e. obtained
+
+> Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained
 the lowest scores overall?
 
 Find the median (less affected by outliers) of each column of the gradebook to see which assignment had the lowest performance
@@ -164,8 +163,8 @@ Always a good idea to check with a plot of your data
 boxplot(gradebook)
 ```
 
-## Question 4
-> Optional Extension: From your analysis of the gradebook, which homework was most
+
+> Q4. Optional Extension: From your analysis of the gradebook, which homework was most
 predictive of overall score (i.e. **highest correlation with average grade score**)?
 
 Use cor() to find the best correlation between the results and the gradebook
