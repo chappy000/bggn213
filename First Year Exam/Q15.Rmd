@@ -1,6 +1,6 @@
 ---
 title: "Question 15"
-author: "Claire Chapman"
+author: "Claire Chapman PID: A59010436"
 date: '2022-07-16'
 output: pdf_document
 ---
@@ -42,8 +42,13 @@ covid.trim %>%
   ggplot(aes(x = date, y = percentage, color = variant_name))+
   geom_line()+
   theme_bw()+
-  labs(title = "Covid-19 Variants in California", x = NULL, y = "Percentage of sequenced specimens", caption = "Data Source: <https:://www.cdph.ca.gov/>")+
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1), legend.title = element_blank(), plot.caption = element_text(size = 8))
+  labs(
+    title = "Covid-19 Variants in California", x = NULL, y = "Percentage of sequenced specimens", 
+    caption = "Data Source: <https:://www.cdph.ca.gov/>")+
+  scale_x_date(
+    date_breaks = "1 month", date_labels = "%b %Y") +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1), 
+    legend.title = element_blank(), plot.caption = element_text(size = 8))
 ```
 
