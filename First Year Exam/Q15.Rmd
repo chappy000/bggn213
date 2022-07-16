@@ -1,0 +1,49 @@
+---
+title: "Question 15"
+author: "Claire Chapman"
+date: '2022-07-16'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Set-up
+### Loading packages
+```{r}
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+```
+
+### Reading in the data
+```{r}
+covid <- read.csv("covid19_variants.csv")
+```
+
+## Prepping the data to be graphed
+### Changing to date format
+```{r}
+covid$date <- ymd(covid$date)
+```
+
+### Filtering out 'Other' and 'Total' data
+```{r}
+covid.trim <- covid %>% 
+  filter(variant_name != "Other" , variant_name != "Total")
+```
+
+
+
+## Graphing
+```{r}
+covid.trim %>% 
+  ggplot(aes(x = date, y = percentage, color = variant_name))+
+  geom_line()+
+  theme_bw()+
+  labs(title = "Covid-19 Variants in California", x = NULL, y = "Percentage of sequenced specimens", caption = "Data Source: <https:://www.cdph.ca.gov/>")+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), legend.title = element_blank(), plot.caption = element_text(size = 8))
+```
+
